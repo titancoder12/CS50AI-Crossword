@@ -112,7 +112,7 @@ class CrosswordCreator():
                 if domain.length != len(possibility):
                     #print(possibility)
                     self.domains[domain].remove(possibility)
-            print(f"ENFORCED: {self.domains}")
+            #print(f"ENFORCED: {self.domains}")
 
 
     def revise(self, x, y):
@@ -147,7 +147,7 @@ class CrosswordCreator():
             return True
         else:
             return False"""
-        print(f"REVISED: {self.domains}")
+        #print(f"REVISED: {self.domains}")
         revised = False
         x_domains = self.domains[x].copy()
         y_domains = self.domains[y].copy()
@@ -258,7 +258,26 @@ class CrosswordCreator():
         that rules out the fewest values among the neighbors of `var`.
         """
         # \/ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO \/
+        """values = []
+        for domain in self.domains[var]:
+            eliminations = 0
+            
+            for neighbor in self.crossword.neighbors(var):
+                for n_domain in self.domains[neighbor]:
+                    if neighbor not in list(assignment.keys()):
+                        test = {var: domain, neighbor: n_domain}
+                        if not self.consistent(test):
+                            eliminations += 1
+            values.append({"domain" :domain, "eliminations":eliminations})
+        x = lambda e: e["eliminations"]
+        values.sort(key=x)
+        print(values)
+        return_val = []
+        for value in values:
+            return_val.append(value["domain"])
+        return return_val"""
         return self.domains[var]
+        
         # /\ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO /\
 
     def select_unassigned_variable(self, assignment):
@@ -294,7 +313,7 @@ class CrosswordCreator():
         var = self.select_unassigned_variable(assignment_c)
         i = 1
         #print(f"variable {var} has domains: {self.domains}")
-        for value in self.domains[var]:
+        for value in self.order_domain_values(var, assignment):
             if i == 200:
                 break
             #print(f"Iteration {i}/{len(self.domains[var])}")
