@@ -258,7 +258,7 @@ class CrosswordCreator():
         that rules out the fewest values among the neighbors of `var`.
         """
         # \/ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO \/
-        """values = []
+        values = []
         for domain in self.domains[var]:
             eliminations = 0
             
@@ -271,12 +271,12 @@ class CrosswordCreator():
             values.append({"domain" :domain, "eliminations":eliminations})
         x = lambda e: e["eliminations"]
         values.sort(key=x)
-        print(values)
+        #print(values)
         return_val = []
         for value in values:
             return_val.append(value["domain"])
-        return return_val"""
-        return self.domains[var]
+        return return_val
+        #return self.domains[var]
         
         # /\ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO /\
 
@@ -289,9 +289,27 @@ class CrosswordCreator():
         return values.
         """
         # \/ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO \/
+        variables = []
         for key in list(self.domains.keys()):
             if key not in assignment:
-                return key
+                variables.append(key)
+        values = []
+        for variable in variables:
+            #for domain in self.domains[variable]:
+            values.append({"var": variable, "domains": len(self.domains[variable]), "neighbors": len(self.crossword.neighbors(variable))})
+        x = lambda e: e["domains"]
+        values.sort(key=x)
+        #print(values)
+
+        ties = []
+        for value in values:
+            if value["domains"] == values[0]["domains"]:
+                ties.append(value)
+        y = lambda e: e["neighbors"]
+        values.sort(key=y)
+        print(ties)
+        return ties[0]["var"]
+        
         # /\ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO /\
 
     def backtrack(self, assignment):
