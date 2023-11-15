@@ -113,6 +113,8 @@ class CrosswordCreator():
                     #print(possibility)
                     self.domains[domain].remove(possibility)
             #print(f"ENFORCED: {self.domains}")
+        #print("domains:")
+        #print(self.domains)
 
 
     def revise(self, x, y):
@@ -152,19 +154,23 @@ class CrosswordCreator():
         x_domains = self.domains[x].copy()
         y_domains = self.domains[y].copy()
         for x_domain in x_domains:
-            not_satisfied = 0
+            satisfied = 0
             for y_domain in y_domains:
                 overlap = self.crossword.overlaps[x, y]
-                if len(y_domain) != len(x_domain):
-                    not_satisfied += 1
-                elif overlap:
+                if overlap:
                     a, b = overlap
                     if x_domain[a] != y_domain[b]:
-                        not_satisfied += 1
-            if not_satisfied == len(y_domains):
+                        continue
+                satisfied +=1
+            if satisfied == 0:
                 self.domains[x].remove(x_domain)
                 revised = True
                 break
+        #print("revised x:")
+        #print(x_domains)
+
+        #print("revised y:")
+        #print(y_domains)
         return revised
 
 
@@ -188,11 +194,13 @@ class CrosswordCreator():
         while len(arcs_c) != 0:
             (X, Y) = arcs_c.pop()
             if self.revise(X, Y):
-                if self.domains[X] == 0:
+                if len(self.domains[X]) == 0:
                     return False
                 for Z in self.crossword.neighbors(X):
                     if Z != Y:
                         arcs_c.append((Z, X))
+        #print("domains:")
+        #print(self.domains)
         return True
 
     def assignment_complete(self, assignment):
@@ -307,7 +315,9 @@ class CrosswordCreator():
                 ties.append(value)
         y = lambda e: e["neighbors"]
         values.sort(key=y)
-        print(ties)
+        #print(ties)
+        #print("selected:")
+        #print(ties[0])
         return ties[0]["var"]
         
         # /\ TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO /\
@@ -323,17 +333,17 @@ class CrosswordCreator():
         """
         # TODO
         if self.assignment_complete(assignment):
-            print("return Assignment")
+            #print("return Assignment")
             return assignment
 
         assignment_c = assignment.copy()
 
         var = self.select_unassigned_variable(assignment_c)
         i = 1
-        #print(f"variable {var} has domains: {self.domains}")
+        #print("_________")
+        #print(assignment)
+        #print(self.order_domain_values(var, assignment))
         for value in self.order_domain_values(var, assignment):
-            if i == 200:
-                break
             #print(f"Iteration {i}/{len(self.domains[var])}")
             #print(value)
             test = assignment_c.copy()
